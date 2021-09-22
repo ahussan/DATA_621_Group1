@@ -138,7 +138,6 @@ Data2 %>%
 ```{r}
 # Use pearson correlation
 corrr:: correlate (Data2, method = "pearson")
-
 ```
 
 
