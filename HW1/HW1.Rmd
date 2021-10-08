@@ -130,17 +130,6 @@ The box-plots above give us idea about the spread of each variable in the data. 
 
 ### Correlation
 
-```{r}
-# Use pearson correlation
-<<<<<<< Updated upstream
-corrr:: correlate (Data2, method = "pearson")
-=======
-#corrr:: correlate (Data2, method = "pearson")
-Data2 %>% correlate() %>% focus(TARGET_WINS)
-
->>>>>>> Stashed changes
-```
-
 These correlations do not show a strong relationship. This indicate presence of ‘noise’ in these relationships.
 
 It is interesting to note allowing hits have little positive impacts on wins. 
@@ -149,8 +138,8 @@ It is also noteworthy that pitching strikeouts by batters and hits aalowed are n
 
 ```{r}
 ggcorr(Data2)
-```
 
+```
 
 
 ```{r}

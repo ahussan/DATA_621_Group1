@@ -54,7 +54,6 @@ Sie Siong Wong\\
 ```{R message=FALSE, warning=FALSE, echo=FALSE,}
 library(dplyr)
 library(tidyr)
-library(knitr)
 ```
 
 # 1. Data Source 
@@ -210,6 +209,7 @@ This curve illustrates the true positive rate versus the false positive rate and
 \pagebreak
 
 
+
 # 11.  Use your created R functions and the provided classification output data set to produce all of the classification metrics discussed above.
 
 
@@ -230,6 +230,8 @@ names(Value) <- c("accuracy", "error_rate", "f1_score", "precision", "sensitivit
 kable(Value, col.names = "Score", caption = "Summary of Classification Metrics")
 
 ```
+
+
 
 
 
