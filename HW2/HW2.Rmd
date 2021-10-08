@@ -54,6 +54,7 @@ Sie Siong Wong\\
 ```{R message=FALSE, warning=FALSE, echo=FALSE,}
 library(dplyr)
 library(tidyr)
+library(knitr)
 ```
 
 # 1. Data Source 
@@ -208,6 +209,27 @@ This curve illustrates the true positive rate versus the false positive rate and
 
 \pagebreak
 
+# 11. Use your created R functions and the provided classification output data set to produce all of the classification metrics discussed above.
+
+```{r}
+accuracy(cm)
+error_rate (cm)
+f1_score(cm)
+precision(cm)
+sensitivity(cm)
+specificity(cm)
+```
+
+
+```{r}
+Value <- c(accuracy(cm), error_rate (cm), f1_score(cm),precision(cm), sensitivity(cm), specificity(cm))
+names(Value) <- c("accuracy", "error_rate", "f1_score", "precision", "sensitivity", "specificity")
+kable(Value, col.names = "Score", caption = "Summary of Classification Metrics")
+```
+
+
+
+
 # 13. Investigation of the `pROC` R package. 
 
 We used the `pROC` R package to generate an ROC curve for the data set. 
@@ -215,6 +237,7 @@ We used the `pROC` R package to generate an ROC curve for the data set.
 ```{r warning=FALSE, message=FALSE, echo=FALSE}
 library(pROC)
 ```
+
 ```{r warning=FALSE, message=FALSE}
 rcurve <- roc(cm$class~cm$scored.probability)
 plot(rcurve, main="ROC Curve") 
