@@ -319,6 +319,8 @@ summary(MV2_step)
 ```
 While the R2 figure still demonstrates limited value in the model, we've achieved a p-value that could be considered significant. Nevertheless, the multivariate models haven't demonstrated much value, all in all. 
 
+In general, the coefficients across these models provide some helpful insights, such as the positive relationships between the cost of a wreck and the number of kids in a home, as well as the age and sex of the driver. An advanced degree also correlates positively with the expensive of the wreck, but the length of travel time seems to relate to less expensive wrecks. This all makes some sense intuitively, however, since older drivers, drivers with advanced degrees, and families likely drive more expensive cars.
+
 # Model Selection
 
 ## Multi Linear Regression
