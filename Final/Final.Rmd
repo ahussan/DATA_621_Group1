@@ -55,6 +55,24 @@ Sie Siong Wong\\
 if(!require('tidyverse')) (install.packages('tidyverse'))
 if(!require('caret')) (install.packages('caret'))
 if(!require('ggpubr')) (install.packages('ggpubr'))
+<<<<<<< Updated upstream
+=======
+if(!require('DataExplorer')) (install.packages('DataExplorer'))
+if(!require('corrplot')) (install.packages('corrplot'))
+if(!require('RColorBrewer')) (install.packages('RColorBrewer'))
+if(!require('randomForest')) (install.packages('randomForest'))
+if(!require('caTools')) (install.packages('caTools'))
+if(!require('tree')) (install.packages('tree'))
+if(!require('car')) (install.packages('car'))
+
+
+library(randomForest)
+library(caTools)
+
+devtools::install_github('skinner927/reprtree')
+library(reprtree)
+
+>>>>>>> Stashed changes
 ```
 
 
@@ -64,7 +82,8 @@ if(!require('ggpubr')) (install.packages('ggpubr'))
 For the final project we will be using different predictive modeling techniques that we have learned throughout the course and using real world data in order to predict if a person has heart disease based on certain factors. The dataset for this final project [Heart Failure Prediction Dataset](https://www.kaggle.com/fedesoriano/heart-failure-prediction) can be found on Kaggle. Each observation in this dataset represents a person's health history, including their age, sex, cholesterol levels, etc. The dataset includes a total of 918 distinct individuals gathered from different countries and agencies. This dataset includes 12 different features, of categorical and/or continous values, of an individual health record, including if the individual has heart disease or not.
 
 # Background
-Cardiovascular diseases is the number 1 cause of death globally. The WHO records show that cardiovascular diseases accounted for 31% of all deaths worldwide in 2016.  According to the CDC, nearly 6.2 million adults in the United States suffer heart failure, and in 2018 alone, heart failure was mentioned on 379,800 death certificates. Also, the treatment cost of health care services and medicines is costly and estimated about 31 billion in 2012. Early detection and management for heart disease could be effective in reducing the incidence of heart failure. 
+Cardiovascular diseases is the number 1 cause of death globally. The WHO records show that cardiovascular diseases accounted for 31% of all deaths worldwide in 2016. 
+According to the CDC, nearly 6.2 million adults in the United States suffer heart failure, and in 2018 alone, heart failure was mentioned on 379,800 death certificates. Also, the treatment cost of health care services and medicines is costly and estimated about 31 billion in 2012. Early detection and management for heart disease could be effective in reducing the incidence of heart failure. 
 
 Note that heart failure occurs when the heart cannot pump enough blood and oxygen to support other organs in the body. With this dataset, we would like to see if we can develop a good model to predict if a person has heart disease and what factors can be attributed to heart disease most directly. We will be tackling this question with the usage of different regression techniques and algorithms learned from this class.
 
@@ -72,7 +91,41 @@ Note that heart failure occurs when the heart cannot pump enough blood and oxyge
 The reason why we have chosen this dataset to work with is because of how relavent this dataset is towards the real world. Heart disease is a condition which affects everyone and being able to successfully predict heart failure ahead of time can save millions of lives. Data scientist are studying everyday trying to understand the predictors of heart failure which is why datasets like this are often on Kaggle in order to gather data scientist from all over to help solve this issue in order to help society.
 
 # Literature Review
-Bruno
+
+
+1. Detrano,~R., Janosi,~A., Steinbrunn,~W., Pfisterer,~M., Schmid,~J.,
+       Sandhu,~S., Guppy,~K., Lee,~S., \& Froelicher,~V. (1989).  {\it 
+       International application of a new probability algorithm for the 
+       diagnosis of coronary artery disease.}  {\it American Journal of 
+       Cardiology}, {\it 64},304--310.
+       -- International Probability Analysis 
+       -- Address: Robert Detrano, M.D.
+                   Cardiology 111-C
+                   V.A. Medical Center
+                   5901 E. 7th Street
+                   Long Beach, CA 90028
+       -- Results in percent accuracy: (for 0.5 probability threshold)
+             Data Name:  CDF    CADENZA
+          -- Hungarian   77     74
+             Long beach  79     77
+             Swiss       81     81
+          -- Approximately a 77% correct classification accuracy with a
+             logistic-regression-derived discriminant function
+    2. David W. Aha & Dennis Kibler
+       -- 
+          https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-020-03626-y
+          
+          -- Instance-based prediction of heart-disease presence with the 
+             Cleveland database
+             -- NTgrowth: 77.0% accuracy
+             --       C4: 74.8% accuracy
+    3. John Gennari
+       -- Gennari, J.~H., Langley, P, \& Fisher, D. (1989). Models of
+          incremental concept formation. {\it Artificial Intelligence, 40},
+          11--61.
+       -- Results: 
+          -- The CLASSIT conceptual clustering system achieved a 78.9% accuracy
+             on the Cleveland database.
 
 # Methodolgy
 
@@ -85,7 +138,7 @@ Bruno
 **ChestPainType**: chest pain type [TA: Typical Angina, ATA: Atypical Angina, NAP: Non-Anginal Pain, ASY: Asymptomatic]
 **RestingBP**: resting blood pressure [mm Hg]
 **Cholesterol**: serum cholesterol [mm/dl]
-**FastingBS**: fasting blood sugar [1: if FastingBS > 120 mg/dl, 0: otherwise]
+**FastingBS**: fasting blood sugar [1: if FastingBS > 120 mg/dl - indicates presence of diabetes, 0: otherwise]
 **RestingECG**: resting electrocardiogram results [Normal: Normal, ST: having ST-T wave abnormality (T wave inversions and/or ST elevation or depression of > 0.05 mV), LVH: showing probable or definite left ventricular hypertrophy by Estes' criteria]
 **MaxHR**: maximum heart rate achieved [Numeric value between 60 and 202]
 **ExerciseAngina**: exercise-induced angina [Y: Yes, N: No]
@@ -121,18 +174,18 @@ Below we'll display a few basic EDA techniques to gain insight into our heart fa
 We can see from quite a few of variables are high variance and skewed. Also, there are no missing data in this dataset. 
 
 ```{r, echo=FALSE, warning=FALSE}
-dataset %>% dplyr::select(-c(Sex, ChestPainType, RestingECG, ExerciseAngina, ST_Slope)) %>%  describe()
+dataset %>% dplyr::select(-c(Sex, ChestPainType, RestingECG, ExerciseAngina, ST_Slope)) %>%  psych::describe()
 plot_missing(dataset)
 ```
 
-From below histogram and density plots, we notice that there are some zero values for Cholesterol variable. As Cholesterol measurement cannot be zero, we may need to want to consider replace with mean or median or impute the zeros.
+From below histogram and density plots, we notice that there are some zero values for `Cholesterol` and `RestingBP` variables. As these measurements cannot be zero, we may need to want to consider replace with mean or median or impute the zeros.
 
 ```{r, echo=FALSE, warning=FALSE}
 plot_histogram(dataset)
 plot_density(dataset)
 ```
 
-For predictors which are character data type, we do count for categorical for which having heart disease. From below bar plots, we can notice Male is more likely to get heart disease than women. Also, most heart disease patients do not feel chest pain, normal blood pressure, having exercise-induced angina, and flat st segment. 
+For predictors which are character data type, we do count for categorical for which having heart disease. From below bar plots, we can notice Male is more likely to get heart disease than women. Also, most heart disease patients do not feel chest pain, have normal blood pressure, having exercise-induced angina, and flat st segment. 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 sex <- dataset %>% dplyr::select(c(Sex, HeartDisease)) %>% filter(HeartDisease ==1) %>% group_by(HeartDisease, Sex) %>% summarise(count=n()) %>% ggplot(aes(x=reorder(Sex, -count), y=count, fill=Sex)) + geom_bar(stat="identity") + ggtitle("Sex Count of Heart Disease = 1") + theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1))
@@ -144,9 +197,13 @@ resting <- dataset %>% dplyr::select(c(RestingECG, HeartDisease)) %>% filter(Hea
 exercise <- dataset %>% dplyr::select(c(ExerciseAngina, HeartDisease)) %>% filter(HeartDisease ==1) %>% group_by(HeartDisease, ExerciseAngina) %>% summarise(count=n()) %>% ggplot(aes(x=reorder(ExerciseAngina, -count), y=count, fill= ExerciseAngina)) + geom_bar(stat="identity") + ggtitle("Exercise-induced Angina Count of Heart Disease = 1") + theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1))
 
 slope <- dataset %>% dplyr::select(c(ST_Slope, HeartDisease)) %>% filter(HeartDisease ==1) %>% group_by(HeartDisease, ST_Slope) %>% summarise(count=n()) %>% ggplot(aes(x=reorder(ST_Slope, -count), y=count, fill=ST_Slope)) + geom_bar(stat="identity") + ggtitle("Slope of Peak Exercise ST Segment Count of Heart Disease = 1") + theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1))
+diabetic <- dataset %>% dplyr::select(c(FastingBS, HeartDisease)) %>% filter(HeartDisease ==1) %>% group_by(HeartDisease, FastingBS) %>% summarise(count=n()) %>% ggplot(aes(x=reorder(FastingBS, -count), y=count, fill=FastingBS)) + geom_bar(stat="identity") + ggtitle("Diabetic Individuals Count of Heart Disease = 1") + theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1))
 
-ggarrange(sex, chestpain, resting, exercise, slope, 
+
+
+ggarrange(sex, chestpain, resting, exercise, slope, diabetic,
           ncol = 2, nrow = 3)
+
 ```
 
 ## Identifying Multicollinearity
@@ -195,7 +252,7 @@ To understand the data in a better way,I created the following table to explain 
 ```{r echo=FALSE}
 Feature <- c("Age", "Sex", "ChestPainType","RestingBP", "Cholesterol", "FastingBS", "RestingECG", "MaxHR", "ExerciseAngina", "Oldpeak", "ST_Slope", "HeartDisease" )
  
-Definition <- c("Patient's age in years", "Gender", "Type of chest-pain", "Resting blood pressure in mmHg","Serum cholestoral in mg/dl", "Fasting blood sugar higher than 120 mg/dl", "Resting electrocardiographic results", "Maximum heart rate achieved", "Exercise induced angina", "ST depression induced by exercise relative to rest", "The slope of the peak exercise ST segment", 
+Definition <- c("Patient's age in years", "Gender", "Type of chest-pain", "Resting blood pressure in mmHg","Serum cholestoral in mg/dl", "Diabetic Person", "Resting electrocardiographic results", "Maximum heart rate achieved", "Exercise induced angina", "ST depression induced by exercise relative to rest", "The slope of the peak exercise ST segment", 
 "Diagnosis of heart disease")
 
 
@@ -247,8 +304,21 @@ train_data$Age <- as.numeric(train_data$Age)
 train_data$Cholesterol <- as.numeric(train_data$Cholesterol)
 train_data$MaxHR <- as.numeric(train_data$MaxHR)
 
+<<<<<<< Updated upstream
 ```
 
+=======
+## Distribution of Heart Disease
+Next we will be looking at how many data points do we have where the client has or does not have heart disease. We would like to make sure that the dataset is balanced in terms of people with and without heart disease in order to create an accurate model.
+
+```{r}
+train_data %>%
+  count(HeartDisease)
+```
+
+As we can see from the result the dataset is also balanced as we have 410 datapoints which don't have heart disease and 508 data points with heart disease. While the dataset might seem balanced on the surface when we look further we will see that the dataset is not balanced based on gender.
+
+>>>>>>> Stashed changes
 ## Distribution of Heart Disease among males and females
 
 ```{r}
@@ -302,7 +372,7 @@ Numerical %>%
 ```{r}
 #Create a subset for the categorical variables
 Categorical <- train_data  %>%
-  select(Sex, ChestPainType, FastingBS, RestingECG, ST_Slope,ExerciseAngina, HeartDisease) %>%
+  select(Sex, ChestPainType, FastingBS, RestingECG, ST_Slope,ExerciseAngina, FastingBS, HeartDisease) %>%
   gather(key = "key", value = "value", -HeartDisease)
 ```
 
@@ -333,11 +403,139 @@ Categorical %>%
 ```
 
 ## Outliers
+<<<<<<< Updated upstream
 
+=======
+As seen in the data exploration part of the section we can see that we have a lot of data values with 0 for **Cholesterol** and one data point with 0 **Resting BP**. As we know it is impossible for humans to have 0 **Cholesterol** or 0 **Resting BP** so we will fix this in the dataset. We will be using the median to fix all the zero values as the median is less susceptible to Outliers. We will compare results with a dataset where 0 values were excluded from the set.
+
+### Cholesterol
+Minimun values is now:
+```{r getting_median}
+#remove rows where cholesterol & restingBP == 0 and create new dataset
+train_data1 <- train_data
+train_data1 <- train_data1[train_data1$Cholesterol != 0,]
+train_data1 <- train_data1[train_data1$RestingBP != 0,]
+
+#replace 0 with median
+cholesterol_median <- median(train_data$Cholesterol[train_data$Cholesterol!= 0])
+train_data$Cholesterol[train_data$Cholesterol == 0] <- cholesterol_median
+min(train_data$Cholesterol)
+```
+
+### Resting BP
+Minimun values is now:
+```{r getting_median}
+rest_median <- median(train_data$RestingBP[train_data$RestingBP!= 0])
+train_data$RestingBP[train_data$RestingBP == 0] <- rest_median
+min(train_data$RestingBP)
+```
+
+>>>>>>> Stashed changes
 
 
 # Model Creation
 
+We can group the features in four different categories:
+- Physical attributes: *age*; *sex*
+- General Health: *restingBP*; *Cholesterol*; *FastingBS*
+- ECG related results: *RestingECG*; *MaxHR*; *Oldpeak*; *ST_Slope*; 
+- Symptomatic: *ChestPainType*; *ExerciseAngina*
+
+Considering that the response variable is binary, we start with a logistic regression with all features included - this is our base model. We also run the same model on the smaller dataset where 0 values were excluded from the set.
+
+```{r}
+model1<-glm(HeartDisease~. , family=binomial(link="logit"), data=train_data)
+summary(model1)
+
+model1a<-glm(HeartDisease~. , family=binomial(link="logit"), data=train_data1)
+
+```
+It's surprising to see that neither 'cholesterol', 'age' nor 'blood pressure' have any significance in the base model. We calculate the variance inflation factor (VIF) to check for multicollinearity - no evidence is found thereof.
+
+```{r}
+vif(model1)
+```
+
+
+Removing non-significant terms with the help of function `drop1', we fit a reduced model - model2.
+
+```{r}
+drop1(model1,test="Chi")
+model2<-glm(HeartDisease ~ Sex + ChestPainType + FastingBS + MaxHR + ExerciseAngina + Oldpeak + ST_Slope, family = binomial(link = "logit"), data = train_data)
+model2a<-glm(HeartDisease ~ Sex + ChestPainType + FastingBS + MaxHR + ExerciseAngina + Oldpeak + ST_Slope, family = binomial(link = "logit"), data = train_data1)
+
+summary(model2)
+```
+
+Next, we build a model using variables in the physical attributes and general health groups which are commonly associated with heart diseases: cholesterol, blood pressure, age and genre.
+
+
+```{r}
+model3<-glm(HeartDisease~ Cholesterol + Sex + RestingBP + Age + FastingBS, family=binomial(link="logit"), data=train_data)
+model3a<-glm(HeartDisease~ Cholesterol + Sex + RestingBP + Age + FastingBS, family=binomial(link="logit"), data=train_data1)
+summary(model3)
+```
+We see that 'cholesterol' and 'age' are now significant when other variables are excluded. Only 'RestingBP' is not significant. We will then fit a model removing this feature.
+
+```{r}
+model4<-glm(HeartDisease~ Cholesterol + Sex +  Age + FastingBS, family=binomial(link="logit"), data=train_data)
+model4a<-glm(HeartDisease~ Cholesterol + Sex + Age + FastingBS, family=binomial(link="logit"), data=train_data1)
+summary(model4)
+```
+
+
+Next, we build a model using variables in the other categories: ECG related results and symptomatic.
+
+```{r}
+model5<-glm(HeartDisease~  MaxHR + RestingECG + Oldpeak + ST_Slope+
+              ChestPainType + ExerciseAngina, family=binomial(link="logit"), data=train_data)
+model5a<-glm(HeartDisease~ MaxHR + RestingECG + Oldpeak + ST_Slope+
+              ChestPainType + ExerciseAngina, family=binomial(link="logit"), data=train_data1)
+summary(model5)
+```
+We now fit a reduced model with only significant features.
+
+```{r}
+model6<-glm(HeartDisease~  MaxHR +  Oldpeak + ST_Slope+
+              ChestPainType, family=binomial(link="logit"), data=train_data)
+model6a<-glm(HeartDisease~ MaxHR +  Oldpeak + ST_Slope+
+              ChestPainType , family=binomial(link="logit"), data=train_data1)
+summary(model6)
+```
+We now fit a model using Random Forest algorithm for regression. Looking at the variable importance - higher value mean more important:
+
+```{r}
+set.seed(345)
+model7<-randomForest(HeartDisease~. , importance=TRUE, mtry = 3, data=train_data)
+round(importance(model7), 2)
+# 
+# model8<-tree(HeartDisease~.,data=train_data )
+# plot(prune.tree(model8))
+# 
+# 
+# reprtree:::plot.getTree(model7)
+# 
+# 
+# plot(model8)
+# 
+# tree <- getTree(model7, k=1, labelVar=TRUE)
+# 
+# realtree <- reprtree:::as.tree(tree, model7)
+# 
+# plot(realtree)
+
+
+
+```
+
+We see that the most important variables are `ST_Slope`, `ChestPainType`, `Oldpeak`, 'Age', 'MaxHR'. 
+
+
+
+
+
 # Model Selection
 
-# Conclusion'
+
+
+# Conclusion
